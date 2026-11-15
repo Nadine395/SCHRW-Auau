@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Die Nuss-Maus – Schreibwörter Au au (B)</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+<style>
+:root{--der:#2f6fd6;--die:#e0393e;--das:#2fa84f;--ink:#3b2412;--or:#ea580c;--card:#fffaf2}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:Andika,system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,#fff4e0 0%,#f8d9a8 100%);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+button{font-family:inherit;border:none;cursor:pointer;color:inherit}
+.emo{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1;display:inline-block;position:relative}
+.combo .sub{position:absolute;font-size:.5em;right:-.45em;top:-.3em}
+.svgpic{width:1.1em;height:1.1em;display:inline-block}.svgpic svg{width:100%;height:100%}
+#leaves{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#leaves span{position:absolute;top:-8vh;font-family:"Noto Color Emoji",sans-serif;opacity:.5;animation:drift linear infinite}
+@keyframes drift{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(4vw,55vh) rotate(180deg)}100%{transform:translate(-3vw,115vh) rotate(360deg)}}
+.screen{display:none;position:fixed;inset:0;z-index:2;flex-direction:column}
+.screen.on{display:flex}
+.tag{position:fixed;right:1.2vmin;bottom:1vmin;font-size:2vmin;color:#a16207;opacity:.6;z-index:5}
+
+/* Start */
+#start{align-items:center;justify-content:center;gap:2.6vmin;padding:3vmin;overflow:auto}
+#start h1{font-size:7vmin;text-align:center}
+#start .sub1{font-size:3.2vmin;color:#92400e;margin-top:-1.5vmin;text-align:center}
+.names{display:flex;gap:3vmin;flex-wrap:wrap;justify-content:center}
+.names label{display:flex;align-items:center;gap:1.2vmin;background:var(--card);padding:1.2vmin 2vmin;border-radius:2vmin;font-size:3.4vmin;font-weight:700;box-shadow:0 .5vmin 1.5vmin #7c2d1222}
+.names input{font-family:inherit;font-size:3.4vmin;width:24vmin;border:3px solid #fcd9a8;border-radius:1.4vmin;padding:.6vmin 1.2vmin;background:#fff}
+.modes{display:flex;gap:2.5vmin;flex-wrap:wrap;justify-content:center}
+.mode{background:var(--card);border:5px solid #fcd9a8;border-radius:3vmin;padding:2.4vmin 3vmin;width:30vmin;text-align:center;font-size:2.7vmin;color:#7c4a1e;box-shadow:0 .8vmin 0 #e9b878}
+.mode .emo{font-size:9vmin;display:block;margin-bottom:1vmin}
+.mode b{display:block;font-size:3.8vmin;color:var(--ink);margin-bottom:.6vmin}
+.mode:active{transform:translateY(.5vmin);box-shadow:0 .3vmin 0 #e9b878}
+.bigmouse{font-size:16vmin;animation:hop 1.4s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-2vmin)}}
+
+/* Spiel */
+#game{display:none}
+header{display:flex;align-items:center;gap:2vmin;padding:1.5vmin 2vmin}
+.pcard{flex:1;display:flex;align-items:center;gap:1.6vmin;background:var(--card);border:5px solid transparent;border-radius:2.5vmin;padding:1vmin 2vmin;opacity:.55;transition:.3s;box-shadow:0 .5vmin 1.5vmin #7c2d1222}
+.pcard.act{opacity:1;border-color:var(--or);transform:scale(1.03)}
+.pcard .emo{font-size:7vmin}
+.pcard .nm{font-size:3.6vmin;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .nuts{font-size:5vmin;font-weight:700;white-space:nowrap}
+.mid{display:flex;flex-direction:column;align-items:center;gap:.6vmin}
+.mid .rnd{font-size:2.6vmin;color:#92400e;font-weight:700}
+.icon{background:var(--card);border-radius:2vmin;width:9vmin;height:9vmin;font-size:4.6vmin;box-shadow:0 .5vmin 0 #e9b878}
+main{flex:1;min-height:0;display:flex;gap:2.5vmin;padding:0 2.5vmin 1vmin}
+.picbox{flex:0 0 38%;background:#fff;border-radius:4vmin;border:6px solid #fcd9a8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;padding:2vmin;position:relative}
+.picbox .pic{font-size:24vmin}
+.picbox .sent{font-size:3.8vmin;font-weight:700;text-align:center}
+.picbox .hear{position:absolute;top:1.5vmin;right:1.5vmin}
+.task{flex:1;min-width:0;min-height:0;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin}
+@media (orientation:portrait){main{flex-direction:column;gap:1.5vmin}.picbox{flex:0 0 24vh;gap:1vmin;padding:1vmin}.picbox .pic{font-size:15vmin}.picbox .sent{font-size:3.4vmin}.task{gap:1.4vmin;justify-content:flex-start;padding-top:1vmin}.typed{min-height:10vmin}.key{height:7.4vmin}.path{height:9vmin}.path .runner{font-size:6.5vmin}.path .tree{font-size:10vmin}}
+.msg{font-size:3.8vmin;font-weight:700;text-align:center;min-height:4.6vmin}
+.artrow{display:flex;gap:3vmin}
+.artbtn{width:20vmin;height:14vmin;border-radius:99px;color:#fff !important;font-size:6vmin;font-weight:700;box-shadow:0 .9vmin 0 #0003}
+.artbtn.der{background:var(--der)}.artbtn.die{background:var(--die)}.artbtn.das{background:var(--das)}
+.artbtn.bad{opacity:.3;animation:shake .4s}
+.artbtn.hint{animation:pulse .8s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+@keyframes shake{25%{transform:translateX(-1.5vmin)}75%{transform:translateX(1.5vmin)}}
+.wordline{display:flex;align-items:flex-end;gap:2vmin;flex-wrap:wrap;justify-content:center}
+.artchip{font-size:7vmin;font-weight:700;padding:0 1vmin}
+.gapword{font-size:7vmin;font-weight:700}
+.slots{display:flex;gap:1vmin;flex-wrap:wrap;justify-content:center}
+.slot{width:8.5vmin;height:11vmin;border-bottom:5px solid #c2843e;font-size:7.5vmin;font-weight:700;display:flex;align-items:center;justify-content:center;background:#fff8;border-radius:1.2vmin 1.2vmin 0 0}
+.slot.ok{color:#15803d;border-color:#16a34a}
+.slot.bad{color:#dc2626;border-color:#dc2626;animation:shake .4s}
+.tiles{display:flex;gap:1.4vmin;flex-wrap:wrap;justify-content:center;max-width:95%}
+.tile{width:10vmin;height:10vmin;border-radius:2vmin;background:#fde7c4;border:4px solid #e9b878;font-size:6.5vmin;font-weight:700;box-shadow:0 .7vmin 0 #c2843e}
+.tile.used{visibility:hidden}
+.typed{min-width:50vmin;min-height:12vmin;background:#fff;border:5px solid #fcd9a8;border-radius:2.5vmin;font-size:7.5vmin;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 2vmin;letter-spacing:.3vmin;white-space:pre}
+.typed .cur{display:inline-block;width:.6vmin;height:7vmin;background:var(--or);margin-left:.4vmin;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.typed .g{color:#15803d}.typed .r{color:#dc2626;text-decoration:underline}
+.model{font-size:5.5vmin;font-weight:700;color:#92400e;background:#fff3;border:3px dashed #e9b878;border-radius:2vmin;padding:.5vmin 3vmin}
+.kb{display:flex;flex-direction:column;gap:1vmin;align-items:center}
+.kb .row{display:flex;gap:1vmin}
+.key{width:7.2vmin;height:7.8vmin;border-radius:1.4vmin;background:#fff;font-size:4.4vmin;font-weight:700;box-shadow:0 .5vmin 0 #d6a56a}
+.key:active{transform:translateY(.4vmin);box-shadow:0 .1vmin 0 #d6a56a}
+.key.wide{width:16vmin;font-size:3.4vmin}
+.key.space{width:28vmin}
+.key.shift.on{background:var(--or);color:#fff}
+.btnrow{display:flex;gap:2vmin;flex-wrap:wrap;justify-content:center}
+.btn{font-size:3.8vmin;font-weight:700;padding:1.6vmin 4vmin;border-radius:99px;background:#16a34a;color:#fff !important;box-shadow:0 .8vmin 0 #0f7a35}
+.btn.tip{background:#facc15;color:var(--ink) !important;box-shadow:0 .8vmin 0 #ca8a04}
+.btn:active{transform:translateY(.5vmin)}
+/* Pfad */
+.path{height:11vmin;position:relative;margin:0 2vmin 1vmin;background:linear-gradient(180deg,#e7b16b,#c98a45);border-radius:6vmin;box-shadow:inset 0 .6vmin 0 #0002}
+.path .nut{position:absolute;bottom:2vmin;font-size:4vmin;transform:translateX(-50%);transition:.3s}
+.path .nut.got{opacity:0;transform:translate(-50%,-6vmin) scale(.5)}
+.path .tree{position:absolute;right:-1vmin;bottom:0;font-size:12vmin}
+.path .runner{position:absolute;bottom:1.2vmin;font-size:8vmin;left:0;transform:translateX(-50%) scaleX(-1);transition:left 1.2s ease-in-out}
+.path .runner.hop{animation:mhop .3s 4}
+@keyframes mhop{50%{bottom:3vmin}}
+/* Banner + Effekte */
+#banner{position:fixed;inset:0;background:#3b241299;display:none;align-items:center;justify-content:center;z-index:20}
+#banner div{background:var(--card);border-radius:4vmin;padding:4vmin 7vmin;font-size:7vmin;font-weight:700;text-align:center;box-shadow:0 2vmin 5vmin #0004;animation:pop .35s}
+#banner .emo{font-size:14vmin;display:block}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.fly{position:fixed;z-index:30;font-size:6vmin;transition:all .9s cubic-bezier(.5,-.4,.6,1);pointer-events:none;font-family:"Noto Color Emoji",sans-serif}
+#fx span{position:fixed;top:-10vh;z-index:25;pointer-events:none;animation:fall 1.9s ease-in forwards;font-family:"Noto Color Emoji",sans-serif}
+@keyframes fall{to{transform:translateY(125vh) rotate(540deg)}}
+/* Ende */
+#end{align-items:center;justify-content:center;gap:3vmin;text-align:center;padding:3vmin}
+#end h2{font-size:6.5vmin}
+#end .tot{font-size:4.5vmin;font-weight:700}
+#end .emo.big{font-size:20vmin}
+</style>
+</head>
+<body>
+<div id="leaves"></div>
+<div class="tag">B</div>
+
+<div id="start" class="screen on">
+  <span class="emo bigmouse">🐁</span>
+  <h1>Die Nuss-Maus <span class="emo">🌰</span></h1>
+  <div class="sub1">Schreibwörter mit <b>Au au</b> · Spielt zu zweit und sammelt Nüsse für den Winter!</div>
+  <div class="names">
+    <label><span class="emo">🐭</span><input id="n0" placeholder="Kind 1" maxlength="12" autocomplete="off"></label>
+    <label><span class="emo">🐁</span><input id="n1" placeholder="Kind 2" maxlength="12" autocomplete="off"></label>
+  </div>
+  <div class="modes" id="modes"></div>
+</div>
+
+<div id="game" class="screen">
+  <header>
+    <div class="pcard" id="pc0"><span class="emo">🐭</span><span class="nm" id="nm0"></span><span class="nuts"><span class="emo">🌰</span> <span id="nt0">0</span></span></div>
+    <div class="mid"><button class="icon" id="home">🏠</button><div class="rnd" id="rnd"></div></div>
+    <div class="pcard" id="pc1"><span class="emo">🐁</span><span class="nm" id="nm1"></span><span class="nuts"><span class="emo">🌰</span> <span id="nt1">0</span></span></div>
+  </header>
+  <main>
+    <div class="picbox" id="picbox"></div>
+    <div class="task" id="task"></div>
+  </main>
+  <div class="path" id="path"></div>
+</div>
+
+<div id="end" class="screen"></div>
+<div id="banner"></div>
+<div id="fx"></div>
+
+<script>
+const CFG={"diff": true, "words": [{"a": "das", "w": "Auto", "p": "🚗", "s": null}, {"a": "der", "w": "Daumen", "p": "👍", "s": null}, {"a": "die", "w": "Frau", "p": "👩", "s": null}, {"a": "der", "w": "Baum", "p": "🌳", "s": null}, {"a": "die", "w": "Maus", "p": "🐭", "s": null}, {"a": "das", "w": "Haus", "p": "🏠", "s": null}, {"a": "die", "w": "Sau", "p": "🐖", "s": null}, {"a": "das", "w": "Auge", "p": "👁️", "s": null}, {"a": "der", "w": "Traum", "p": "combo:😴|💭", "s": null}, {"a": null, "w": "laufen", "p": "🏃", "s": "Wir ___ schnell."}, {"a": null, "w": "kauen", "p": "combo:😋|🍎", "s": "Ich ___ den Apfel."}, {"a": null, "w": "blau", "p": "svg:blau", "s": "Der Himmel ist ___."}, {"a": null, "w": "grau", "p": "svg:grau", "s": "Die Maus ist ___."}, {"a": null, "w": "aus", "p": "svg:aus", "s": "Das Licht ist ___."}, {"a": null, "w": "auf", "p": "svg:auf", "s": "Die Tür ist ___."}], "modes": ["art", "salat", "type"], "distract": 0};
+const SVG={
+blau:'<svg viewBox="0 0 100 100"><path d="M50 8C70 10 90 25 88 48 86 70 72 92 48 90 24 88 10 72 12 50 14 28 30 6 50 8Z" fill="#2f6fd6"/><circle cx="85" cy="20" r="6" fill="#2f6fd6"/><circle cx="14" cy="86" r="5" fill="#2f6fd6"/><path d="M35 30Q45 22 58 28" stroke="#fff8" stroke-width="5" fill="none" stroke-linecap="round"/></svg>',
+grau:'<svg viewBox="0 0 100 100"><path d="M50 8C70 10 90 25 88 48 86 70 72 92 48 90 24 88 10 72 12 50 14 28 30 6 50 8Z" fill="#8a8f98"/><circle cx="85" cy="20" r="6" fill="#8a8f98"/><circle cx="14" cy="86" r="5" fill="#8a8f98"/><path d="M35 30Q45 22 58 28" stroke="#fff8" stroke-width="5" fill="none" stroke-linecap="round"/></svg>',
+aus:'<svg viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="22" stroke="#555" stroke-width="3"/><path d="M28 40Q28 22 50 22Q72 22 72 40Q72 52 62 60V70H38V60Q28 52 28 40Z" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/><rect x="38" y="70" width="24" height="10" rx="2" fill="#64748b"/><rect x="42" y="80" width="16" height="6" rx="2" fill="#475569"/><text x="50" y="98" font-size="10" text-anchor="middle" fill="#64748b">💤</text></svg>',
+auf:'<svg viewBox="0 0 100 100"><rect x="18" y="8" width="64" height="88" fill="#3b2412"/><rect x="22" y="12" width="56" height="84" fill="#fde68a"/><path d="M22 12 L52 20 L52 100 L22 96 Z" fill="#b45309" stroke="#7c2d12" stroke-width="2"/><circle cx="46" cy="58" r="3" fill="#facc15"/></svg>'
+};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const full=it=>it.a?it.a+' '+it.w:it.w;
+function picHTML(p){if(p.startsWith('svg:'))return `<span class="svgpic">${SVG[p.slice(4)]}</span>`;if(p.startsWith('combo:')){const[a,b]=p.slice(6).split('|');return `<span class="emo combo">${a}<span class="sub">${b}</span></span>`}return `<span class="emo">${p}</span>`}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* Herbstblätter */
+(function(){const L=$('#leaves');for(let i=0;i<10;i++){const s=document.createElement('span');s.textContent=['🍂','🍁','🍂','🌰'][i%4];s.style.left=Math.random()*100+'vw';s.style.fontSize=(3+Math.random()*3)+'vmin';s.style.animationDuration=(14+Math.random()*12)+'s';s.style.animationDelay=(-Math.random()*25)+'s';L.appendChild(s)}})();
+
+/* Ton & Stimme */
+let deVoice=null;
+function lv(){try{const v=speechSynthesis.getVoices();deVoice=v.find(x=>/^de[-_]DE/i.test(x.lang))||v.find(x=>/^de/i.test(x.lang))||null}catch(e){}}
+try{speechSynthesis.onvoiceschanged=lv;lv()}catch(e){}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';if(deVoice)u.voice=deVoice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+let AC;
+function tone(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t0=AC.currentTime;(ok?[523,659,784]:[330,247]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?'triangle':'sine';o.frequency.value=f;const t=t0+i*.12;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.28);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.3)})}catch(e){}}
+function leaves(){const c=$('#fx');for(let i=0;i<26;i++){const s=document.createElement('span');s.textContent=['🍂','🍁','🌰','⭐'][i%4];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.5+'s';s.style.fontSize=(4+Math.random()*4)+'vmin';c.appendChild(s);setTimeout(()=>s.remove(),2600)}}
+
+/* Startseite */
+const MODES={
+  art:{e:'🔵🔴🟢',t:'Artikel-Detektiv',d:'der, die oder das? Tippe die richtige Farbe!'},
+  salat:{e:'🧩',t:'Buchstaben-Salat',d:'Erst der, die, das – dann die Buchstaben ordnen.'},
+  type:{e:'⌨️',t:'Selber schreiben',d:CFG.diff?'Erst der, die, das – dann das Wort selbst schreiben.':'Schreibe das Wort mit der, die, das selbst.'}
+};
+$('#modes').innerHTML=CFG.modes.map(m=>`<button class="mode" data-m="${m}"><span class="emo">${MODES[m].e}</span><b>${MODES[m].t}</b>${MODES[m].d}</button>`).join('');
+$$('#modes .mode').forEach(b=>b.onclick=()=>start(b.dataset.m));
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));$('#game').style.display=id==='game'?'flex':'none'}
+$('#home').onclick=()=>{try{speechSynthesis.cancel()}catch(e){}show('start')};
+
+/* Spielzustand */
+let G={};
+function start(mode){
+  try{speechSynthesis.speak(new SpeechSynthesisUtterance(' '))}catch(e){}try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}
+  const names=[0,1].map(i=>($('#n'+i).value.trim()||('Kind '+(i+1))));
+  const nouns=CFG.words.filter(w=>w.a);
+  const deck=mode==='art'?shuffle(nouns.slice()).concat(shuffle(nouns.slice())):shuffle(CFG.words.slice());
+  G={mode,deck,i:0,cur:0,players:names.map(n=>({name:n,nuts:0}))};
+  [0,1].forEach(i=>{$('#nm'+i).textContent=G.players[i].name;$('#nt'+i).textContent='0'});
+  buildPath();show('game');round();
+}
+function buildPath(){
+  const N=G.deck.length;let h='';
+  for(let k=1;k<=N;k++)h+=`<span class="nut emo" id="pn${k}" style="left:${4+(k/N)*84}%">🌰</span>`;
+  h+=`<span class="tree emo">🌳</span><span class="runner emo" id="runner" style="left:4%">🐁</span>`;
+  $('#path').innerHTML=h;
+}
+function advance(){const N=G.deck.length,k=G.i+1;const r=$('#runner');r.style.left=(4+(k/N)*84)+'%';r.classList.remove('hop');void r.offsetWidth;r.classList.add('hop');setTimeout(()=>{const n=$('#pn'+k);if(n)n.classList.add('got')},1100)}
+function bar(){[0,1].forEach(i=>{$('#pc'+i).classList.toggle('act',G.cur===i);$('#nt'+i).textContent=G.players[i].nuts});$('#rnd').textContent=`Wort ${G.i+1} / ${G.deck.length}`}
+
+function round(){
+  const it=G.it=G.deck[G.i];
+  G.step='';G.tries=0;G.tips=0;G.artWrong=0;G.artDone=false;
+  bar();
+  const sent=it.s?`<div class="sent">${esc(it.s)}</div>`:'';
+  $('#picbox').innerHTML=`<button class="icon hear" id="hear">🔊</button><div class="pic">${picHTML(it.p)}</div>${sent}`;
+  $('#hear').onclick=()=>sayItem();
+  const p=G.players[G.cur];
+  const b=$('#banner');b.innerHTML=`<div><span class="emo">${G.cur?'🐁':'🐭'}</span>${esc(p.name)} ist dran!</div>`;b.style.display='flex';
+  const go=()=>{if(b.style.display==='none')return;b.style.display='none';sayItem();};
+  b.onclick=go;setTimeout(go,1400);
+  const artFirst=it.a&&(G.mode==='art'||G.mode==='salat'||(G.mode==='type'&&CFG.diff));
+  if(artFirst)renderArt();else renderWord();
+}
+function sayItem(){const it=G.it;
+  if(G.step==='art'){speak(it.w);return}
+  if(it.s)speak(it.w+'. '+it.s.replace('___',it.w));else speak(full(it));
+}
+function setMsg(h){const m=$('#msg');if(m)m.innerHTML=h}
+
+/* Schritt 1: Artikel */
+function renderArt(){
+  const it=G.it;G.step='art';
+  const word=G.mode==='art'?`<span class="gapword">___ ${esc(it.w)}</span>`:`<span class="gapword">___ ?</span>`;
+  $('#task').innerHTML=`<div class="msg" id="msg">Heißt es <span style="color:var(--der)">der</span>, <span style="color:var(--die)">die</span> oder <span style="color:var(--das)">das</span>?</div><div class="wordline">${word}</div><div class="artrow">${['der','die','das'].map(a=>`<button class="artbtn ${a}" data-a="${a}">${a}</button>`).join('')}</div>`;
+  $$('.artbtn').forEach(b=>b.onclick=()=>{
+    if(G.artDone)return;
+    if(b.dataset.a===it.a){
+      G.artDone=true;tone(true);
+      const n=G.artWrong?0:(G.mode==='art'?2:1);
+      if(n)giveNuts(n,b);
+      $$('.artbtn').forEach(x=>{if(x!==b)x.style.opacity=.25});b.classList.remove('hint');
+      if(G.mode==='art'){setMsg(n?'Richtig! <span class="emo">🌰</span>':'Jetzt stimmt es!');$('.wordline').innerHTML=`<span class="artchip" style="color:var(--${it.a})">${it.a}</span><span class="gapword">${esc(it.w)}</span>`;speak(full(it));finish(true,0)}
+      else{setMsg('Richtig! Jetzt kommt das Wort.');speak(full(it));setTimeout(renderWord,1100)}
+    }else{
+      G.artWrong++;tone(false);b.classList.add('bad');
+      if(G.artWrong>=2){const c=$$('.artbtn').find(x=>x.dataset.a===it.a);c.classList.add('hint');setMsg(`Hör genau: <b>${full(it)}</b>`);speak(full(it))}
+      else setMsg('Hm, noch einmal! Hör genau hin. 🔊');
+    }
+  });
+}
+
+/* Schritt 2: Wort */
+function target(){const it=G.it;return (it.a&&G.mode==='type'&&!CFG.diff)?full(it):it.w}
+function artPrefix(){const it=G.it;return (it.a&&G.artDone)?`<span class="artchip" style="color:var(--${it.a})">${it.a}</span>`:''}
+function renderWord(){G.step='word';G.mode==='salat'?renderSalat():renderType()}
+
+function renderSalat(){
+  const t=G.it.w;const letters=[...t];
+  let extra=[];const pool='aeinrstlmhu';for(let k=0;k<CFG.distract;k++)extra.push(pool[Math.floor(Math.random()*pool.length)]);
+  G.tiles=shuffle(letters.concat(extra)).map((c,id)=>({c,id,used:false}));
+  G.slots=letters.map(()=>null);
+  $('#task').innerHTML=`<div class="msg" id="msg">Lege das Wort! Tippe die Buchstaben der Reihe nach.</div><div class="wordline">${artPrefix()}<div class="slots" id="slots"></div></div><div class="tiles" id="tiles"></div>`;
+  drawSalat();
+}
+function drawSalat(){
+  $('#slots').innerHTML=G.slots.map((s,i)=>`<div class="slot" data-i="${i}">${s?esc(s.c):''}</div>`).join('');
+  $('#tiles').innerHTML=G.tiles.map(t=>`<button class="tile ${t.used?'used':''}" data-id="${t.id}">${esc(t.c)}</button>`).join('');
+  $$('#tiles .tile').forEach(b=>b.onclick=()=>{if(G.step!=='word')return;const t=G.tiles[b.dataset.id];if(t.used)return;const k=G.slots.indexOf(null);if(k<0)return;G.slots[k]=t;t.used=true;drawSalat();if(!G.slots.includes(null))checkSalat()});
+  $$('#slots .slot').forEach(s=>s.onclick=()=>{if(G.step!=='word')return;const i=+s.dataset.i;const t=G.slots[i];if(!t)return;t.used=false;G.slots[i]=null;drawSalat()});
+}
+function checkSalat(){
+  const t=[...G.it.w];const wrong=G.slots.map((s,i)=>s.c!==t[i]);
+  const sl=$$('#slots .slot');
+  if(!wrong.includes(true)){sl.forEach(s=>s.classList.add('ok'));G.step='done';tone(true);const n=Math.max(1,3-G.tries);giveNuts(n,$('#slots'));setMsg(praise(n));speak(full(G.it));finish(true,n);return}
+  G.tries++;tone(false);
+  sl.forEach((s,i)=>s.classList.add(wrong[i]?'bad':'ok'));
+  setMsg('Fast! Die <span style="color:#dc2626">roten</span> Buchstaben passen noch nicht.');
+  G.step='wait';
+  setTimeout(()=>{G.slots.forEach((s,i)=>{if(wrong[i]){s.used=false;G.slots[i]=null}});G.step='word';drawSalat();
+    if(G.tries>=2){setMsg('Tipp: Hör genau hin! 🔊');sayItem()}},900);
+}
+
+function renderType(){
+  G.typed='';G.shift=false;G.showCheck=false;G.model=false;
+  const rows=[['a','b','c','d','e','f','g','h','i','j'],['k','l','m','n','o','p','q','r','s','t'],['u','v','w','x','y','z','ä','ö','ü','ß']];
+  const kb=rows.map(r=>`<div class="row">${r.map(c=>`<button class="key" data-k="${c}">${c}</button>`).join('')}</div>`).join('')+
+    `<div class="row"><button class="key wide shift" data-k="SHIFT">⇧ groß</button><button class="key space" data-k=" ">Leertaste</button><button class="key wide" data-k="DEL">⌫</button></div>`;
+  const hintTxt=(G.it.a&&!CFG.diff)?'Schreibe das Wort mit <b>der, die</b> oder <b>das</b>!':'Schreibe das Wort!';
+  $('#task').innerHTML=`<div class="msg" id="msg">${hintTxt}</div><div id="modelBox"></div><div class="wordline">${artPrefix()}<div class="typed" id="typed"></div></div><div class="kb">${kb}</div><div class="btnrow"><button class="btn tip" id="tipB">💡 Tipp</button><button class="btn" id="chkB">✔ Fertig</button></div>`;
+  $$('.key').forEach(k=>k.onclick=()=>typeKey(k.dataset.k));
+  $('#chkB').onclick=checkType;$('#tipB').onclick=tip;
+  drawTyped();
+}
+function typeKey(k){
+  if(G.step!=='word')return;G.showCheck=false;
+  if(k==='SHIFT'){G.shift=!G.shift}
+  else if(k==='DEL'){G.typed=G.typed.slice(0,-1)}
+  else{if(G.typed.length>=24)return;G.typed+=G.shift?k.toUpperCase():k;G.shift=false}
+  drawTyped();
+}
+function drawTyped(){
+  const t=target();
+  $$('.key').forEach(k=>{const c=k.dataset.k;if(c.length===1&&c!==' ')k.textContent=G.shift?c.toUpperCase():c});
+  const sh=$('.key.shift');if(sh)sh.classList.toggle('on',G.shift);
+  let h;
+  if(G.showCheck)h=[...G.typed].map((c,i)=>`<span class="${c===t[i]?'g':'r'}">${c===' '?'&nbsp;':esc(c)}</span>`).join('')+([...G.typed].length<[...t].length?'<span class="r">_</span>':'');
+  else h=esc(G.typed)+'<span class="cur"></span>';
+  $('#typed').innerHTML=h;
+}
+function checkType(){
+  if(G.step!=='word')return;
+  const t=target(),y=G.typed.trim().replace(/\s+/g,' ');
+  if(y===t){G.typed=y;G.step='done';G.showCheck=true;drawTyped();tone(true);const n=G.model?1:Math.max(1,3-G.tries-G.tips);giveNuts(n,$('#typed'));setMsg(praise(n));speak(full(G.it));finish(true,n);return}
+  G.tries++;tone(false);G.showCheck=true;drawTyped();
+  let m='Noch nicht ganz – schau auf die <span style="color:#dc2626">roten</span> Buchstaben.';
+  if(y.toLowerCase()===t.toLowerCase())m='Fast! Achte auf <b>groß</b> und <b>klein</b>.';
+  else if(G.it.a&&t.includes(' ')&&y.split(' ').slice(-1)[0]===G.it.w)m='Das Wort stimmt! Aber der Artikel noch nicht. 🔊';
+  if(G.tries>=2&&!G.model){G.model=true;$('#modelBox').innerHTML=`<div class="model">${esc(t)}</div>`;m='Schau genau und schreibe es ab!'}
+  setMsg(m);
+}
+function tip(){
+  if(G.step!=='word')return;const t=target();let k=0;
+  while(k<G.typed.length&&G.typed[k]===t[k])k++;
+  if(k>=t.length)return;
+  G.typed=t.slice(0,k+1);G.tips++;G.showCheck=false;drawTyped();
+}
+
+function praise(n){return (n>=3?'Super! ':n===2?'Toll! ':'Geschafft! ')+'<span class="emo">'+'🌰'.repeat(n)+'</span>'}
+function giveNuts(n,fromEl){
+  const p=G.players[G.cur];p.nuts+=n;
+  const r=(fromEl||document.body).getBoundingClientRect(),to=$('#nt'+G.cur).getBoundingClientRect();
+  for(let k=0;k<n;k++){const s=document.createElement('span');s.className='fly';s.textContent='🌰';s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';document.body.appendChild(s);
+    setTimeout(()=>{s.style.left=to.left+'px';s.style.top=to.top+'px';s.style.transform='scale(.6)'},60+k*150);
+    setTimeout(()=>{s.remove();$('#nt'+G.cur).textContent=G.players[G.cur].nuts},1100+k*150)}
+}
+function finish(ok,n){
+  G.step='done';advance();if(n>=2||G.mode==='art')leaves();
+  setTimeout(()=>{const last=G.i>=G.deck.length-1;
+    const row=document.createElement('div');row.className='btnrow';row.innerHTML=`<button class="btn" id="nextB">${last?'🏆 Fertig!':'Weiter ➜'}</button>`;
+    const old=$('.btnrow');if(old)old.replaceWith(row);else $('#task').appendChild(row);
+    $('#nextB').onclick=()=>{G.i++;G.cur=1-G.cur;if(G.i>=G.deck.length)end();else round()}},700);
+}
+function end(){
+  const [a,b]=G.players;const tot=a.nuts+b.nuts;
+  $('#end').innerHTML=`<span class="emo big">🐁🌳</span><h2>Geschafft! Die Nuss-Maus hat Vorrat für den Winter!</h2>
+  <div class="tot"><span class="emo">🐭</span> ${esc(a.name)}: ${a.nuts} <span class="emo">🌰</span> &nbsp; · &nbsp; <span class="emo">🐁</span> ${esc(b.name)}: ${b.nuts} <span class="emo">🌰</span></div>
+  <div class="tot">Zusammen: ${tot} Nüsse!</div>
+  <div class="btnrow"><button class="btn" id="again">🔁 Nochmal</button><button class="btn tip" id="menu">🏠 Andere Spielart</button></div>`;
+  show('end');leaves();
+  $('#again').onclick=()=>start(G.mode);$('#menu').onclick=()=>show('start');
+}
+</script>
+</body>
+</html>
